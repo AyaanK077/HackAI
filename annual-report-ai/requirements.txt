@@ -3,8 +3,9 @@
 
 fastapi
 uvicorn
-pdfminer.six
-langchain
-openai
-faiss-cpu
+python-multipart
+pdf2image
+pytesseract
+google-generativeai
 python-dotenv
+Pillow

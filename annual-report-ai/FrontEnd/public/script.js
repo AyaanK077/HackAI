@@ -4,7 +4,7 @@ const qInput = document.getElementById("question");
 const askBtn = document.getElementById("ask-btn");
 
 const BACKEND = "http://localhost:8000";
-let currentFileId = null;
+let extractedText = null;
 
 // 1) Upload PDF
 uploadEl.addEventListener("change", async () => {
@@ -20,9 +20,10 @@ uploadEl.addEventListener("change", async () => {
       body: data
     });
     const result = await res.json();
-    currentFileId = result.file_id;
-    console.log("File uploaded with ID:", currentFileId);
+    extractedText = result.text;
+    addMessage(`PDF "${result.filename}" uploaded successfully`, 'bot');
   } catch (error) {
+    addMessage("Upload failed: " + error.message, 'error');
     console.error("Upload failed:", error);
   }
 });
@@ -32,35 +33,46 @@ askBtn.addEventListener("click", async () => {
   const question = qInput.value.trim();
   if (!question) return;
   
-  // Add user question to chat
-  chatEl.innerHTML += `<div class="message you">${question}</div>`;
+  if (!extractedText) {
+    addMessage("Please upload a PDF first", 'error');
+    return;
+  }
+  
+  addMessage(question, 'you');
   
   try {
-    const formData = new FormData();
-    formData.append("question", question);
-    if (currentFileId) {
-      formData.append("file_id", currentFileId);
-    }
-    
     const res = await fetch(`${BACKEND}/ask`, {
       method: "POST",
-      body: formData
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        question: question,
+        context: extractedText
+      })
     });
     
-    const { answer, error } = await res.json();
-    if (error) {
-      chatEl.innerHTML += `<div class="message error">${error}</div>`;
+    const result = await res.json();
+    if (result.answer) {
+      addMessage(result.answer, 'bot');
     } else {
-      chatEl.innerHTML += `<div class="message bot">${answer}</div>`;
+      addMessage("No answer received", 'error');
     }
   } catch (error) {
-    chatEl.innerHTML += `<div class="message error">Failed to get answer</div>`;
+    addMessage("Failed to get answer", 'error');
     console.error("Error:", error);
   }
   
   qInput.value = "";
   chatEl.scrollTop = chatEl.scrollHeight;
 });
+
+function addMessage(text, sender) {
+  const messageEl = document.createElement('div');
+  messageEl.classList.add('message', sender);
+  messageEl.textContent = text;
+  chatEl.appendChild(messageEl);
+}
 
 // Allow pressing Enter to ask question
 qInput.addEventListener("keypress", (e) => {

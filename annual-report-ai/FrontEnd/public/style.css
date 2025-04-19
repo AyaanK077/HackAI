@@ -1,17 +1,74 @@
-.error {
-  color: red;
-  text-align: left;
+body {
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-#pdf-upload {
-  margin-bottom: 1rem;
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+}
+
+#chat {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.message {
+  padding: 8px 12px;
+  margin: 5px 0;
+  border-radius: 18px;
+  max-width: 70%;
+}
+
+.message.you {
+  background-color: #007bff;
+  color: white;
+  align-self: flex-end;
+}
+
+.message.bot {
+  background-color: #f1f1f1;
+  align-self: flex-start;
+}
+
+.message.error {
+  background-color: #ffebee;
+  color: #d32f2f;
+  align-self: center;
+  max-width: 100%;
 }
 
 #question {
-  width: 70%;
-  padding: 0.5rem;
+  width: calc(100% - 100px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
 }
 
 #ask-btn {
-  padding: 0.5rem 1rem;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#ask-btn:hover {
+  background-color: #0056b3;
+}
+
+#pdf-upload {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px dashed #ddd;
+  border-radius: 5px;
 }

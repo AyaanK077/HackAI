@@ -1,19 +1,29 @@
-from BackEnd.pdf_utils import extract_text_from_pdf, chunk_text
-from BackEnd.embed_utils import create_vectorstore
-from langchain.chains import RetrievalQA
-from langchain_openai import ChatOpenAI
+import google.generativeai as genai
+from dotenv import load_dotenv
+import os
 
-def generate_answer(question, file_bytes):
-    # Extract and chunk
-    text = extract_text_from_pdf(file_bytes)
-    chunks = chunk_text(text)
+load_dotenv()
 
-    # Embed
-    vectorstore = create_vectorstore(chunks)
+# Configure Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-pro')
 
-    # Ask question
-    llm = ChatOpenAI(model_name="gpt-3.5-turbo")
-    retriever = vectorstore.as_retriever()
-    qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
-
-    return qa_chain.run(question)
+def generate_response(question, context):
+    try:
+        prompt = f"""
+        You are an AI assistant specialized in analyzing annual reports. 
+        Use the following context from an annual report to answer the question.
+        
+        Context:
+        {context}
+        
+        Question: {question}
+        
+        Provide a concise and accurate answer based on the annual report. 
+        If the information isn't available, say "This information is not available in the annual report."
+        """
+        
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Error generating response: {str(e)}"
