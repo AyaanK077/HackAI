@@ -1,0 +1,17 @@
+.error {
+  color: red;
+  text-align: left;
+}
+
+#pdf-upload {
+  margin-bottom: 1rem;
+}
+
+#question {
+  width: 70%;
+  padding: 0.5rem;
+}
+
+#ask-btn {
+  padding: 0.5rem 1rem;
+}
