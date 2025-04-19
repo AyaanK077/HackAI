@@ -1,7 +1,0 @@
-fastapi
-uvicorn[standard]
-langchain
-openai
-faiss-cpu
-pdfminer.six
-python-dotenv
