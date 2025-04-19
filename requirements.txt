@@ -3,5 +3,5 @@ uvicorn[standard]
 langchain
 openai
 faiss-cpu
-pdfplumber
+pdfminer.six
 python-dotenv
